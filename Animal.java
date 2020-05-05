@@ -20,7 +20,7 @@ public abstract class Animal
     
    abstract public void act(List<Animal> newAnimals);
    
-       
+   abstract protected Animal newAnimal(boolean flag, Field field, Location location);    
     
     
    //abstract protected void giveBirth(List<Animal> newAnimals); 

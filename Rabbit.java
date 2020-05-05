@@ -56,11 +56,11 @@ public class Rabbit extends Animal
      * around. Sometimes it will breed or die of old age.
      * @param newRabbits A list to return newly born rabbits.
      */
-    public void act(List<Rabbit> newRabbits)
+    public void act(List<Animal> newAnimals)
     {
         incrementAge();
         if(isAlive()) {
-            giveBirth(newRabbits);             
+            giveBirth(newAnimals);             
             // Try to move into a free location.
             Location newLocation = field.freeAdjacentLocation(location);
             if(newLocation != null) {
@@ -82,6 +82,13 @@ public class Rabbit extends Animal
         return location;
     }
 
+    protected Rabbit newAnimal(boolean flag, Field field, Location location)
+    {
+        var newRabbit = new Rabbit(false, field, location);
+        return newRabbit;
+    }
+    
+    
     /**
      * Increase the age.
      * This could result in the rabbit's death.
@@ -99,7 +106,7 @@ public class Rabbit extends Animal
      * New births will be made into free adjacent locations.
      * @param newRabbits A list to return newly born rabbits.
      */
-    private void giveBirth(List<Rabbit> newRabbits)
+    private void giveBirth(List<Animal> newAnimals)
     {
         // New rabbits are born into adjacent locations.
         // Get a list of adjacent free locations.
@@ -108,7 +115,7 @@ public class Rabbit extends Animal
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Rabbit young = new Rabbit(true, field, loc);
-            newRabbits.add(young);
+            newAnimals.add(young);
         }
     }
         

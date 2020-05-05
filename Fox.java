@@ -67,12 +67,12 @@ public class Fox extends Animal
      * @param field The field currently occupied.
      * @param newFoxes A list to return newly born foxes.
      */
-    public void act(List<Fox> newFoxes)
+    public void act(List<Animal> newAnimals)
     {
         incrementAge();
         incrementHunger();
         if(isAlive()) {
-            giveBirth(newFoxes);            
+            giveBirth(newAnimals);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
             if(newLocation == null) { 
@@ -154,12 +154,18 @@ public class Fox extends Animal
         return null;
     }
     
+    protected Fox newAnimal(boolean flag, Field field, Location location)
+    {
+        var newFox = new Fox(false, field, location);
+        return newFox;
+    }
+    
     /**
      * Check whether or not this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to return newly born foxes.
      */
-    private void giveBirth(List<Fox> newFoxes)
+    private void giveBirth(List<Animal> newAnimals)
     {
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.
@@ -168,7 +174,7 @@ public class Fox extends Animal
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Fox young = new Fox(true, field, loc);
-            newFoxes.add(young);
+            newAnimals.add(young);
         }
     }
         
