@@ -23,9 +23,10 @@ public class Simulator
     // The probability that a rabbit will be created in any given position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.08;    
 
+    private PopulationGenerator popGen;
+    
     // Lists of animals in the field.
-    private List<Rabbit> rabbits;
-    private List<Fox> foxes;
+    private List<Animal> animals;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -54,16 +55,10 @@ public class Simulator
             depth = DEFAULT_DEPTH;
             width = DEFAULT_WIDTH;
         }
-        
-        rabbits = new ArrayList<>();
-        foxes = new ArrayList<>();
-        field = new Field(depth, width);
-
+        popGen = new PopulationGenerator(field, animals);
         // Create a view of the state of each location in the field.
-        view = new SimulatorView(depth, width);
-        view.setColor(Rabbit.class, Color.ORANGE);
-        view.setColor(Fox.class, Color.BLUE);
-        
+        view = new SimulatorView(Simulator.getDefaultDepth(),Simulator.getDefaultWidth());
+        popGen.setViewColors(view);
         // Setup a valid starting point.
         reset();
     }
@@ -96,111 +91,91 @@ public class Simulator
      */
     public void simulateOneStep()
     {
-        step++;
+       step++;
 
-        // Provide space for newborn rabbits.
-        List<Rabbit> newRabbits = new ArrayList<>();        
+        // Provide space for newborn animals.
+        List<Animal> newAnimals = new ArrayList<>();        
         // Let all rabbits act.
-        for(Iterator<Rabbit> it = rabbits.iterator(); it.hasNext(); ) {
-            Rabbit rabbit = it.next();
-            rabbit.run(newRabbits);
-            if(! rabbit.isAlive()) {
+        for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
+            Animal animal = it.next();
+            animal.act(newAnimals);
+            if(! animal.isAlive()) {
                 it.remove();
             }
         }
-        
-        // Provide space for newborn foxes.
-        List<Fox> newFoxes = new ArrayList<>();        
-        // Let all foxes act.
-        for(Iterator<Fox> it = foxes.iterator(); it.hasNext(); ) {
-            Fox fox = it.next();
-            fox.hunt(newFoxes);
-            if(! fox.isAlive()) {
-                it.remove();
-            }
-        }
-        
+               
         // Add the newly born foxes and rabbits to the main lists.
-        rabbits.addAll(newRabbits);
-        foxes.addAll(newFoxes);
+        animals.addAll(newAnimals);
 
         view.showStatus(step, field);
     }
         
+    public static int getDefaultWidth()
+    {
+        return DEFAULT_WIDTH;
+    }
+    
+    public static int getDefaultDepth()
+    {
+        return DEFAULT_DEPTH;
+    }
+    
     /**
      * Reset the simulation to a starting position.
      */
     public void reset()
     {
         step = 0;
-        rabbits.clear();
-        foxes.clear();
-        populate();
+        animals.clear();
+        field.clear();
+        popGen.populate();
         
         // Show the starting state in the view.
         view.showStatus(step, field);
     }
     
+    
     /**
      * Randomly populate the field with foxes and rabbits.
      */
-    private void populate()
-    {
-        Random rand = Randomizer.getRandom();
-        field.clear();
-        for(int row = 0; row < field.getDepth(); row++) {
-            for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Fox fox = new Fox(true, field, location);
-                    foxes.add(fox);
-                }
-                else if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Rabbit rabbit = new Rabbit(true, field, location);
-                    rabbits.add(rabbit);
-                }
-                // else leave the location empty.
-            }
-        }
-    }
+    
     
     public void runShortSimulation()
     {
       simulate(100);  
     }
     
-    public boolean checkListFieldEquivalence()
-    {
-      boolean equivalent = true;
-      List<Object> fieldObjects = field.getAllObjects();
+    // private boolean checkListFieldEquivalence()
+    // {
+      // boolean equivalent = true;
+      // List<Object> fieldObjects = field.getAllObjects();
       
-      for (Fox fox : foxes)
-      {
-         if(! fieldObjects.contains(fox))
-         {
-             equivalent = false;
-            }
-        }
+      // for (Fox fox : foxes)
+      // {
+         // if(! fieldObjects.contains(fox))
+         // {
+             // equivalent = false;
+            // }
+        // }
         
-      for (Rabbit rabbit : rabbits)
-      {
-         if(! fieldObjects.contains(rabbit))
-         {
-             equivalent = false;
-            }
-        }
+      // for (Rabbit rabbit : rabbits)
+      // {
+         // if(! fieldObjects.contains(rabbit))
+         // {
+             // equivalent = false;
+            // }
+        // }
       
-      for(Object obj : fieldObjects)
-      {
-          if (! (rabbits.contains(obj) || foxes.contains(obj)))
-          {
-             equivalent = false; 
-            }
-        }
+      // for(Object obj : fieldObjects)
+      // {
+          // if (! (rabbits.contains(obj) || foxes.contains(obj)))
+          // {
+             // equivalent = false; 
+            // }
+        // }
         
-      return equivalent;
-    }
+      // return equivalent;
+    // }
     
     
     /**

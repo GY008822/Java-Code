@@ -26,9 +26,9 @@ public class Rabbit extends Animal
     // Individual characteristics (instance fields).
     
     // The rabbit's age.
-    private int age;
+    private int age; 
     // Whether the rabbit is alive or not.
-    private boolean alive;
+    
    
 
     /**
@@ -43,11 +43,12 @@ public class Rabbit extends Animal
     {
         
         super(location, field);
-        super.setLocation(location);
+        setLocation(location);
+        age = 0;
         if(randomAge) {
             age = rand.nextInt(MAX_AGE);
         }
-        age = 0;
+        
     }
     
     /**
@@ -55,19 +56,19 @@ public class Rabbit extends Animal
      * around. Sometimes it will breed or die of old age.
      * @param newRabbits A list to return newly born rabbits.
      */
-    public void run(List<Rabbit> newRabbits)
+    public void act(List<Rabbit> newRabbits)
     {
         incrementAge();
-        if(alive) {
+        if(isAlive()) {
             giveBirth(newRabbits);             
             // Try to move into a free location.
             Location newLocation = field.freeAdjacentLocation(location);
             if(newLocation != null) {
-                super.setLocation(newLocation);
+                setLocation(newLocation);
             }
             else {
                 // Overcrowding.
-                super.setDead();
+                setDead();
             }
         }
     }
@@ -89,7 +90,7 @@ public class Rabbit extends Animal
     {
         age++;
         if(age > MAX_AGE) {
-            super.setDead();
+            setDead();
         }
     }
     
@@ -106,7 +107,7 @@ public class Rabbit extends Animal
         int births = breed();
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
-            Rabbit young = new Rabbit(false, field, loc);
+            Rabbit young = new Rabbit(true, field, loc);
             newRabbits.add(young);
         }
     }

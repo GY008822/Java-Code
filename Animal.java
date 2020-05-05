@@ -5,9 +5,9 @@ import java.util.*;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Animal
+public abstract class Animal
 {
-   protected boolean alive;
+   private boolean alive;
    protected Location location;
    protected Field field;
    
@@ -17,6 +17,13 @@ public class Animal
        this.location = location;
        this.field = field;
     }
+    
+   abstract public void act(List<Animal> newAnimals);
+   
+       
+    
+    
+   //abstract protected void giveBirth(List<Animal> newAnimals); 
     
    public Field getField()
    {

@@ -49,7 +49,7 @@ public class Fox extends Animal
         super(location,field);
         age = 0;
        
-        super.setLocation(location);
+        setLocation(location);
         if(randomAge) {
             age = rand.nextInt(MAX_AGE);
             foodLevel = rand.nextInt(RABBIT_FOOD_VALUE);
@@ -67,11 +67,11 @@ public class Fox extends Animal
      * @param field The field currently occupied.
      * @param newFoxes A list to return newly born foxes.
      */
-    public void hunt(List<Fox> newFoxes)
+    public void act(List<Fox> newFoxes)
     {
         incrementAge();
         incrementHunger();
-        if(alive) {
+        if(isAlive()) {
             giveBirth(newFoxes);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
@@ -85,7 +85,7 @@ public class Fox extends Animal
             }
             else {
                 // Overcrowding.
-                super.setDead();
+                setDead();
             }
         }
     }
@@ -167,7 +167,7 @@ public class Fox extends Animal
         int births = breed();
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
-            Fox young = new Fox(false, field, loc);
+            Fox young = new Fox(true, field, loc);
             newFoxes.add(young);
         }
     }
